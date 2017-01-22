@@ -1,8 +1,11 @@
 
 package com.example.werek.themoviedb.model;
 
+import com.example.werek.themoviedb.util.MovieDbApi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.net.URL;
 
 public class BelongsToCollection {
 
@@ -18,6 +21,15 @@ public class BelongsToCollection {
     @SerializedName("backdrop_path")
     @Expose
     private Object backdropPath;
+
+    public URL getPosterUrl(String size) {
+        return MovieDbApi.buildImageURL(size,getPosterPath());
+    }
+
+    public URL getPosterUrl()
+    {
+        return getPosterUrl(MovieDbApi.POSTER_WIDTH_185);
+    }
 
     public Integer getId() {
         return id;

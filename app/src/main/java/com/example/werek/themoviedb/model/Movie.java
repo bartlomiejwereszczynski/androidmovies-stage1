@@ -5,25 +5,18 @@ package com.example.werek.themoviedb.model;
  */
 
 
-import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import com.example.werek.themoviedb.util.MovieDbApi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Movie {
-    public static final String POSTER_BASE_URL = "https://image.tmdb.org/t/p";
-    public static final String POSTER_WIDTH_92 = "w92";
-    public static final String POSTER_WIDTH_154 = "w154";
-    public static final String POSTER_WIDTH_185 = "w185";
-    public static final String POSTER_WIDTH_342 = "w342";
-    public static final String POSTER_WIDTH_500 = "w500";
-    public static final String POSTER_WIDTH_780 = "w780";
-    public static final String POSTER_WIDTH_ORIGINAL = "original";
-
+public class Movie implements Parcelable {
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -78,45 +71,21 @@ public class Movie {
     }
 
     public URL getPosterUrl(String size) {
-        String urlString = Uri.parse(POSTER_BASE_URL)
-                .buildUpon()
-                .appendPath(size)
-                .appendPath(getPosterPath())
-                .build()
-                .toString();
-        URL url = null;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
+        return MovieDbApi.buildImageURL(size,getPosterPath());
     }
 
     public URL getPosterUrl()
     {
-        return getPosterUrl(POSTER_WIDTH_185);
+        return getPosterUrl(MovieDbApi.POSTER_WIDTH_185);
     }
 
     public URL getBackdropUrl(String size) {
-        String urlString = Uri.parse(Movie.POSTER_BASE_URL)
-                .buildUpon()
-                .appendPath(size)
-                .appendPath(getBackdropPath())
-                .build()
-                .toString();
-        URL url = null;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
+        return MovieDbApi.buildImageURL(size,getBackdropPath());
     }
 
     public URL getBackdropUrl()
     {
-        return getBackdropUrl(Movie.POSTER_WIDTH_780);
+        return getBackdropUrl(MovieDbApi.POSTER_WIDTH_780);
     }
 
     public Boolean getAdult() {
@@ -297,5 +266,59 @@ public class Movie {
                 ", voteAverage=" + voteAverage +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.posterPath);
+        dest.writeValue(this.adult);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeList(this.genreIds);
+        dest.writeValue(this.id);
+        dest.writeString(this.originalTitle);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.title);
+        dest.writeString(this.backdropPath);
+        dest.writeValue(this.popularity);
+        dest.writeValue(this.voteCount);
+        dest.writeValue(this.video);
+        dest.writeValue(this.voteAverage);
+    }
+
+    public Movie() {
+    }
+
+    protected Movie(Parcel in) {
+        this.posterPath = in.readString();
+        this.adult = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.genreIds = new ArrayList<Integer>();
+        in.readList(this.genreIds, List.class.getClassLoader());
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.originalTitle = in.readString();
+        this.originalLanguage = in.readString();
+        this.title = in.readString();
+        this.backdropPath = in.readString();
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.voteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.video = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.voteAverage = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }
 

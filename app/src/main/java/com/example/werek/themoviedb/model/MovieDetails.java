@@ -1,12 +1,10 @@
 
 package com.example.werek.themoviedb.model;
 
-import android.net.Uri;
-
+import com.example.werek.themoviedb.util.MovieDbApi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -89,45 +87,21 @@ public class MovieDetails {
     private Integer voteCount;
 
     public URL getPosterUrl(String size) {
-        String urlString = Uri.parse(Movie.POSTER_BASE_URL)
-                .buildUpon()
-                .appendPath(size)
-                .appendPath(getPosterPath())
-                .build()
-                .toString();
-        URL url = null;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
+        return MovieDbApi.buildImageURL(size,getPosterPath());
     }
 
     public URL getPosterUrl()
     {
-        return getPosterUrl(Movie.POSTER_WIDTH_185);
+        return getPosterUrl(MovieDbApi.POSTER_WIDTH_185);
     }
 
     public URL getBackdropUrl(String size) {
-        String urlString = Uri.parse(Movie.POSTER_BASE_URL)
-                .buildUpon()
-                .appendPath(size)
-                .appendPath(getBackdropPath())
-                .build()
-                .toString();
-        URL url = null;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
+        return MovieDbApi.buildImageURL(size,getBackdropPath());
     }
 
     public URL getBackdropUrl()
     {
-        return getBackdropUrl(Movie.POSTER_WIDTH_780);
+        return getBackdropUrl(MovieDbApi.POSTER_WIDTH_780);
     }
 
     public Boolean getAdult() {
