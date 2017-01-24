@@ -94,6 +94,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             Log.d(TAG, "poster url: " + posterUrl);
             Picasso.with(mPosterImage.getContext())
                     .load(posterUrl)
+                    .error(R.drawable.ic_chain_broken)
+                    .placeholder(R.drawable.ic_image)
                     .into(mPosterImage);
         }
 

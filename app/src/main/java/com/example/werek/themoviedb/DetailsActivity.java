@@ -60,11 +60,15 @@ public class DetailsActivity extends AppCompatActivity {
         if (poster != null) {
             Picasso.with(this)
                     .load(poster.toString())
+                    .error(R.drawable.ic_chain_broken)
+                    .placeholder(R.drawable.ic_image)
                     .into(mPoster);
         }
         if (backdrop != null) {
             Picasso.with(this)
                     .load(backdrop.toString())
+                    .error(R.drawable.ic_chain_broken)
+                    .placeholder(R.drawable.ic_image)
                     .into(mBackdrop);
         }
         setTitle(movie.getTitle());

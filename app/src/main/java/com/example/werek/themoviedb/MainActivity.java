@@ -1,6 +1,9 @@
 package com.example.werek.themoviedb;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,6 +60,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     void loadMovies(@Nullable String sorting) {
+        if (BuildConfig.MOVIE_DB_API_KEY.equals("missingKeyFile")) {
+            showError(R.string.error_key);
+            return;
+        }
         if (sorting == null) {
             sorting = Preferences.getSorting(this);
         }
@@ -168,6 +175,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onOptionsItemSelected(item);
     }
 
+    boolean isInternetAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     class LoadMoviesTask extends AsyncTask<String, Void, MoviesList> {
         private final String TAG = LoadMoviesTask.class.getName();
 
@@ -237,7 +251,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 showResults();
             } else {
                 Log.d(TAG, "got empty result response");
-                showError(R.string.error_no_results);
+                int message = isInternetAvailable() ? R.string.error_no_results : R.string.error_no_connection;
+                showError(message);
             }
         }
     }
