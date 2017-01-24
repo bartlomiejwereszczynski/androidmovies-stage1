@@ -12,22 +12,31 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailsActivity extends AppCompatActivity {
     private static final String TAG = DetailsActivity.class.getName();
     protected Movie mMovie;
-    private ImageView mPoster;
-    private ImageView mBackdrop;
-    private TextView mTitle;
-    private TextView mSynopsis;
-    private TextView mReleaseDate;
-    private TextView mRating;
+    @BindView(R.id.iv_poster)
+    ImageView mPoster;
+    @BindView(R.id.iv_backdrop)
+    ImageView mBackdrop;
+    @BindView(R.id.tv_title)
+    TextView mTitle;
+    @BindView(R.id.tv_synopsis)
+    TextView mSynopsis;
+    @BindView(R.id.tv_release_date)
+    TextView mReleaseDate;
+    @BindView(R.id.tv_user_rating)
+    TextView mRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        bindUi();
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(MainActivity.MOVIE_EXTRA)) {
@@ -39,15 +48,6 @@ public class DetailsActivity extends AppCompatActivity {
             Log.d(TAG, "Movie details: " + mMovie.toString());
             loadMovie(mMovie);
         }
-    }
-
-    private void bindUi() {
-        mPoster = (ImageView) findViewById(R.id.iv_poster);
-        mBackdrop = (ImageView) findViewById(R.id.iv_backdrop);
-        mTitle = (TextView) findViewById(R.id.tv_title);
-        mSynopsis = (TextView) findViewById(R.id.tv_synopsis);
-        mReleaseDate = (TextView) findViewById(R.id.tv_release_date);
-        mRating = (TextView) findViewById(R.id.tv_user_rating);
     }
 
     private void loadMovie(Movie movie) {

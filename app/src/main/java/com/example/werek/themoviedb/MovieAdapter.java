@@ -9,17 +9,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.werek.themoviedb.model.Movie;
+import com.example.werek.themoviedb.model.MoviesList;
 import com.example.werek.themoviedb.util.MovieDbApi;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by werek on 22.01.2017.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private List<Movie> mMovieList;
+    private static final String TAG = MovieAdapter.class.getName();
+    private MoviesList mMovieList;
     private MovieDetailsListener mMovieDetails;
 
     public MovieAdapter(@Nullable MovieDetailsListener movieDetails) {
@@ -35,7 +38,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        holder.loadMovie(mMovieList.get(position));
+        holder.loadMovie(mMovieList.getResults().get(position));
     }
 
     interface MovieDetailsListener {
@@ -49,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      */
     @Override
     public int getItemCount() {
-        return mMovieList == null ? 0 : mMovieList.size();
+        return mMovieList == null ? 0 : mMovieList.getResults().size();
     }
 
     /**
@@ -57,22 +60,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      *
      * @param movies list of movies to display
      */
-    public void setMovieList(@Nullable List<Movie> movies) {
+    public void setMovieList(@Nullable MoviesList movies) {
         mMovieList = movies;
         notifyDataSetChanged();
     }
 
+    public MoviesList getMovieList() {
+        return mMovieList;
+    }
+
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final String TAG = MovieViewHolder.class.getName();
+        @BindView(R.id.iv_movie_poster)
         ImageView mPosterImage;
 
         /**
-         *
          * @param itemView parent view object for this particular viewholder
          */
         public MovieViewHolder(View itemView) {
             super(itemView);
-            mPosterImage = (ImageView) itemView.findViewById(R.id.iv_movie_poster);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -98,8 +105,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
             if (mMovieDetails != null) {
-                Log.d(TAG,"sending movie to listener");
-                mMovieDetails.onMovieDetails(mMovieList.get(getAdapterPosition()));
+                Log.d(TAG, "sending movie to listener");
+                mMovieDetails.onMovieDetails(mMovieList.getResults().get(getAdapterPosition()));
             }
         }
     }
